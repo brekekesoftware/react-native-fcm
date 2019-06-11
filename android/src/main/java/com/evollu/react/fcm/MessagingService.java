@@ -18,7 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MessagingService extends FirebaseMessagingService {
-
+    public static String initialNotification = null;
     private static final String TAG = "MessagingService";
 
     @Override
@@ -30,7 +30,19 @@ public class MessagingService extends FirebaseMessagingService {
         buildLocalNotification(remoteMessage);
 
         final Intent message = i;
-        
+
+        if (MessagingService.initialNotification == null) {
+          try {
+            MessagingService.initialNotification = ReactNativeJson.convertMapToJson(
+              FIRMessagingModule.parseParams(remoteMessage)
+            ).toString();
+            Log.d(TAG, MessagingService.initialNotification);
+          } catch (Exception err) {
+            Log.d(TAG, "onMessageReceived: " + err.getMessage());
+            err.printStackTrace();
+          }
+        }
+
         // We need to run this on the main thread, as the React code assumes that is true.
         // Namely, DevServerHelper constructs a Handler() without a Looper, which triggers:
         // "Can't create handler inside thread that has not called Looper.prepare()"
