@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MessagingService extends FirebaseMessagingService {
+    public static Boolean alreadyGetInitialNotification = false;
     public static String initialNotification = null;
     private static final String TAG = "MessagingService";
 
@@ -31,7 +32,8 @@ public class MessagingService extends FirebaseMessagingService {
 
         final Intent message = i;
 
-        if (MessagingService.initialNotification == null) {
+        if (MessagingService.initialNotification == null
+            && !MessagingService.alreadyGetInitialNotification) {
           try {
             MessagingService.initialNotification = ReactNativeJson.convertMapToJson(
               FIRMessagingModule.parseParams(remoteMessage)

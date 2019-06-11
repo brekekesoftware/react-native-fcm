@@ -72,6 +72,8 @@ public class FIRMessagingModule extends ReactContextBaseJavaModule implements Li
       try {
         JSONObject o = new JSONObject(MessagingService.initialNotification);
         promise.resolve(ReactNativeJson.convertJsonToMap(o));
+        MessagingService.alreadyGetInitialNotification = true;
+        MessagingService.initialNotification = null;
       } catch (Exception err) {
         Log.e(TAG, "getInitialNotification: " + err.getMessage());
         err.printStackTrace();
